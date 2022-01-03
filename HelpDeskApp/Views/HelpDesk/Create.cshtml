@@ -1,0 +1,98 @@
+﻿@model HelpDeskApp.Models.Ticket;
+
+<form method="post" asp-action="Create">
+    <div class="border p-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row">
+            <h2 class="text-info pl-3">Add Ticket</h2>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Location"></label>
+                    </div>
+                    <div asp-form="Name" class="col-8">
+                        <input asp-for="Location" class="form-control" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PhoneNumber"></label>
+                    </div>
+                    <div class="col-8">
+                        <input type="number" asp-for="PhoneNumber" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div>
+                        <div class="col-4">
+                            <label asp-for="Category"></label>
+                        </div>
+                        <div class="col-8">
+                            <select asp-for="Category">
+                                <option value="Printer Issue">Printer Issue</option>
+                                <option value="CPU Issue">Computer Issue</option>
+                                <option value="Login Issue">Login Issue</option>
+                                <option value="PC Issue">Computer Issue</option>
+                                <option value="Software Issue">Software Issue</option>
+                                <option value="DigitalRX Issue">DigitalRX Issue</option>
+                            </select>
+                            <span asp-validation-for="Category" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col-4">
+                            <label asp-for="Urgency"></label>
+                        </div>
+                        <div class="col-8">
+                            <select asp-for="Urgency">
+                                <option value="1">1 (Not Urgent)</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5 (Most Urgent)</option>
+                            </select>
+                            <span asp-validation-for="Urgency" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea class="form-control" asp-for="Description"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-8 offset-4 row">
+
+                        <div class="col">
+                            <input type="submit" class="btn btn-info w-100" value="Create" />
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success w-100"><i class="fas fa-sign-out-alt"></i> Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                @* Keep this empty *@
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
