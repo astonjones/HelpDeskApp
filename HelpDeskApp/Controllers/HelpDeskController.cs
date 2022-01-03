@@ -30,10 +30,11 @@ namespace HelpDeskApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Ticket obj)
         {
+            obj.Status = "Not Started";
+            Console.WriteLine(ModelState.IsValid);
+            Console.WriteLine(obj.Status);
             if (ModelState.IsValid)
             {
-                obj.Status = "Not Started";
-
                 Console.WriteLine(obj);
 
                 _db.Tickets.Add(obj);
