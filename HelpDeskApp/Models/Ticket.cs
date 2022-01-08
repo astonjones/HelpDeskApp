@@ -7,13 +7,14 @@ namespace HelpDeskApp.Models
     public partial class Ticket
     {
         [Key]
-        public double Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
         public string Location { get; set; }
+        [Display(Name = "Phone Number")]
         [Required]
         public double PhoneNumber { get; set; }
         [Required]
