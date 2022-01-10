@@ -4,7 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 #Manual Adds
-HelpDesk/HelpDeskApp/appsettings.json
+HelpDeskApp/HelpDeskApp/appsettings.json
 
 # User-specific files
 *.rsuser
