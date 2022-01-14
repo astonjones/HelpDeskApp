@@ -3,15 +3,20 @@
 @if (User.Identity.IsAuthenticated)
 {
     <ul class="nav navbar-nav navbar-right">
-        @{ 
-            <li class="navbar-text">
-                Hello @User.Identity.Name!
-            </li>
+        @if (User.IsInRole("Administrator"))
+        {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Helpdesk" asp-action="Admin">Admin Portal</a>
+        </li>
         }
+        <li class="navbar-text">
+            Logged in as: @User.Identity.Name  
+        </li>
 
-<li><a asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a></li>
-
-</ul>
+        <li class="navbar-text">
+            <a asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>
+        </li>
+    </ul>
 }
 else
 {

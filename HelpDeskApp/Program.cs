@@ -12,13 +12,7 @@ var configuration = builder.Configuration;
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 
 // Add services to the container.
-services.AddControllersWithViews(options =>
-{
-    var policy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
-    options.Filters.Add(new AuthorizeFilter(policy));
-}).AddMicrosoftIdentityUI();
+services.AddControllersWithViews().AddMicrosoftIdentityUI();
 services.AddMicrosoftIdentityWebAppAuthentication(configuration, "AzureAd");
 services.AddDbContext<HelpDeskContext>(options =>
                 options.UseSqlServer(connectionString));

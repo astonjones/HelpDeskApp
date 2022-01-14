@@ -1,9 +1,11 @@
 ﻿using HelpDeskApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Principal;
 
 namespace HelpDeskApp.Controllers
 {
+    [Authorize]
     public class HelpDeskController : Controller
     {
 
@@ -13,12 +15,12 @@ namespace HelpDeskApp.Controllers
         {
             _db = db;
         }
-
+        //Need to only give access to tickets of the logged in user.
         public IActionResult Index()
         {
-            IEnumerable<Ticket> objList = _db.Tickets;
-            
-            return View(objList);
+            IEnumerable<Ticket> userTickets = _db.Tickets.Where(ticket => ticket.Email == User.Identity.Name);
+
+            return View(userTickets);
         }
 
         //GET
@@ -87,6 +89,14 @@ namespace HelpDeskApp.Controllers
             }
 
             return View(obj);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Admin() 
+        {
+            IEnumerable<Ticket> objList = _db.Tickets;
+
+            return View(objList);
         }
     }
 }
