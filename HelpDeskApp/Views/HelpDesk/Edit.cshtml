@@ -1,4 +1,5 @@
 ﻿@model HelpDeskApp.Models.Ticket;
+@using System.Security.Principal;
 
 <form method="post" asp-action="Edit" class="d-flex justify-content-center">
     <div class="border p-3">
@@ -15,7 +16,14 @@
                 <div class="col-12">
                     <label asp-for="Status"></label>
                     <div asp-form="Status">
-                        <input asp-for="Status" readonly class="form-control" />
+                        @if (User.IsInRole("Administrator")) {
+                            <input asp-for="Status" class="form-control" />
+
+                        } else
+                        {
+                            <input asp-for="Status" readonly class="form-control" />
+
+                        }
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
                 </div>
@@ -110,7 +118,12 @@
                         <input type="submit" class="btn btn-info w-100 text-white" value="Edit" />
                     </div>
                     <div class="col">
-                        <a asp-action="Index" class="btn btn-success w-100"><i class="fas fa-sign-out-alt"></i> Back</a>
+                        @if (User.IsInRole("Administrator")) {
+                            <a asp-action="Admin" class="btn btn-success w-100"><i class="fas fa-sign-out-alt"></i> Back</a>
+                        } else
+                        {
+                            <a asp-action="Index" class="btn btn-success w-100"><i class="fas fa-sign-out-alt"></i> Back</a>
+                        }
                     </div>
                 </div>
             </div>

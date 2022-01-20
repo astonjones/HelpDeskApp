@@ -18,8 +18,7 @@ namespace HelpDeskApp.Controllers
         //Need to only give access to tickets of the logged in user.
         public IActionResult Index()
         {
-            IEnumerable<Ticket> userTickets = _db.Tickets.Where(ticket => ticket.Email == User.Identity.Name);
-
+            IEnumerable<Ticket> userTickets = _db.Tickets.Where(ticket => ticket.Email == User.Identity.Name && ticket.Status != "Closed");
             return View(userTickets);
         }
 
@@ -34,12 +33,16 @@ namespace HelpDeskApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Ticket obj)
         {
-            obj.Status = "Not Started";
+            if (obj.Status == null) {
+                obj.Status = "Not Started";
+            }
+
             if (ModelState.IsValid)
             {
                 _db.Tickets.Add(obj);
                 _db.SaveChanges();
-                return RedirectToAction("Index");
+                if (User.IsInRole("Administrator")) return RedirectToAction("Admin"); 
+                else return RedirectToAction("Index");
             }
             return View(obj);
         }
@@ -69,9 +72,9 @@ namespace HelpDeskApp.Controllers
             {
                 _db.Tickets.Update(obj);
                 _db.SaveChanges();
-                return RedirectToAction("Index");
+                if (User.IsInRole("Administrator")) return RedirectToAction("Admin");
+                else return RedirectToAction("Index");
             }
-
             return View(obj);
         }
 
@@ -92,10 +95,22 @@ namespace HelpDeskApp.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
-        public IActionResult Admin() 
+        public IActionResult Admin()
         {
-            IEnumerable<Ticket> objList = _db.Tickets;
+            IEnumerable<Ticket> objList = _db.Tickets.Where(ticket => ticket.Status != "Closed");
+            return View(objList);
+        }
 
+        public IActionResult Closed()
+        {
+            IEnumerable<Ticket> userTickets = _db.Tickets.Where(ticket => ticket.Email == User.Identity.Name && ticket.Status == "Closed");
+            return View(userTickets);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult ClosedAdmin()
+        {
+            IEnumerable<Ticket> objList = _db.Tickets.Where(ticket => ticket.Status == "Closed");
             return View(objList);
         }
     }
