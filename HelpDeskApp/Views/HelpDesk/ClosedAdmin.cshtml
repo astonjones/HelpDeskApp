@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HelpDeskApp.Models.Ticket>;
+﻿@model PaginatedList<HelpDeskApp.Models.Ticket>;
 
 <div class="d-flex justify-content-between py-3">
     <div>
@@ -7,22 +7,57 @@
     <a class="btn btn-primary" asp-action="Create">Create Ticket</a>
 </div>
 
+<form>
+    <div class="form-actions no-color">
+        <p>
+            Search by Name, Email, Location, or Category: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-sm btn-info" />
+            <a asp-action="Index" class=" btn btn-sm btn-warning">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
 <div>
-    <h3>Pagination and Search will need to be added eventually</h3>
     <div>
         @if (Model.Count() > 0)
         {
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p>@Model.PageSize Records Per Page | Page - @Model.PageIndex out of @Model.TotalPages</p>
+                    <p>Total Records: @Model.RecordCount</p>
+                </div>
+                <div>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="btn btn-outline-secondary @prevDisabled">
+                        Previous
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="btn btn-outline-secondary @nextDisabled">
+                        Next
+                    </a>
+                </div>
+            </div>
+
             <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>
-                        Name
+                        <a asp-action="ClosedAdmin" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
                     </th>
                     <th>
-                        Location
+                        <a asp-action="ClosedAdmin" asp-route-sortOrder="@ViewData["LocationSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Location</a>
                     </th>
                     <th>
-                        Category
+                        <a asp-action="ClosedAdmin" asp-route-sortOrder="@ViewData["CategorySortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Category</a>
                     </th>
                     <th>
                         Urgency
@@ -46,6 +81,29 @@
                 }
             </tbody>
             </table>
+
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p>@Model.PageSize Records Per Page | Page - @Model.PageIndex out of @Model.TotalPages</p>
+                    <p>Total Records: @Model.RecordCount</p>
+                </div>
+                <div>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="btn btn-outline-secondary @prevDisabled">
+                        Previous
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="btn btn-outline-secondary @nextDisabled">
+                        Next
+                    </a>
+                </div>
+            </div>
         }
         else
         {

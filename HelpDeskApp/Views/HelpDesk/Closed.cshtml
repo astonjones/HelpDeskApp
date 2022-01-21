@@ -1,17 +1,56 @@
-﻿@model IEnumerable<HelpDeskApp.Models.Ticket>;
+﻿@model PaginatedList<HelpDeskApp.Models.Ticket>;
 
 <div class="d-flex justify-content-between py-3">
     <div>
         <h5>Got an IT problem? Create a ticket</h5>
+        <a class="btn btn-success" asp-controller="HelpDesk" asp-action="Index">Go Back</a>
     </div>
-    <a class="btn btn-primary" asp-action="Create">Create Ticket</a>
+    <div>
+        <a class="btn btn-primary" asp-action="Create">Create Ticket</a>
+    </div>
 </div>
+
+<form>
+    <div class="form-actions no-color">
+        <p>
+            Search by Category: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-sm btn-info" />
+            <a asp-action="Index" class=" btn btn-sm btn-warning">Back to Full List</a>
+        </p>
+    </div>
+</form>
 
 <div>
     <h3>These are your closed tickets.</h3>
     <div>
         @if (Model.Count() > 0)
         {
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p>@Model.PageSize Records Per Page | Page - @Model.PageIndex out of @Model.TotalPages</p>
+                    <p>Total Records: @Model.RecordCount</p>
+                </div>
+                <div>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="btn btn-outline-secondary @prevDisabled">
+                        Previous
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="btn btn-outline-secondary @nextDisabled">
+                        Next
+                    </a>
+                </div>
+            </div>
+
             <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -39,8 +78,7 @@
                         <td>@obj.Category</td>
                         <td>@obj.Urgency</td>
                         <td>
-                            <a asp-controller="HelpDesk" asp-route-Id="@obj.Id" asp-action="Details" class="mx-1">Details</a>|
-                            <a asp-controller="HelpDesk" asp-route-Id="@obj.Id" asp-action="Edit" class="mx-1">Edit</a>
+                            <a asp-controller="HelpDesk" asp-route-Id="@obj.Id" asp-action="Details" class="mx-1">Details</a>
                         </td>
                     </tr>
                 }

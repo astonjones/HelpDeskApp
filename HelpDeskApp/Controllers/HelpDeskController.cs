@@ -1,6 +1,7 @@
 ﻿using HelpDeskApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Principal;
 
 namespace HelpDeskApp.Controllers
@@ -101,17 +102,79 @@ namespace HelpDeskApp.Controllers
             return View(objList);
         }
 
-        public IActionResult Closed()
+        public async Task<IActionResult> Closed(
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
-            IEnumerable<Ticket> userTickets = _db.Tickets.Where(ticket => ticket.Email == User.Identity.Name && ticket.Status == "Closed");
-            return View(userTickets);
+            if(searchString != null) { pageNumber = 1; }
+            else { searchString = currentFilter; }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var items = from i in _db.Tickets select i;
+            items = items.Where(item => item.Status == "Closed" && item.Email == User.Identity.Name);
+
+            //search by attributes placed in this block
+            if (!String.IsNullOrEmpty(searchString)) 
+            {
+                items = items.Where(ticket => ticket.Category.Contains(searchString));
+            }
+
+            int pageSize = 50;
+            return View(await PaginatedList<Ticket>.CreateAsync(items.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         [Authorize(Roles = "Administrator")]
-        public IActionResult ClosedAdmin()
+        public async Task<IActionResult> ClosedAdmin(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
-            IEnumerable<Ticket> objList = _db.Tickets.Where(ticket => ticket.Status == "Closed");
-            return View(objList);
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CategorySortParm"] = String.IsNullOrEmpty(sortOrder) ? "Category" : "";
+            ViewData["LocationSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Location" : "";
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name" : "";
+            ViewData["EmailSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Email" : "";
+
+            if(searchString != null) {  pageNumber = 1; }
+            else { searchString = currentFilter; }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var items = from i in _db.Tickets select i;
+            items = items.Where(ticket => ticket.Status == "Closed");
+
+            //search by attributes placed in this block
+            if(!String.IsNullOrEmpty(searchString))
+            {
+                items = items.Where(ticket => ticket.Category.Contains(searchString) || ticket.Location.Contains(searchString) ||
+                ticket.Name.Contains(searchString) || ticket.Email.Contains(searchString));
+            }
+
+            //Chooses what to sort by according to parameter
+            switch (sortOrder)
+            {
+                case "Category":
+                    items = items.OrderByDescending(i => i.Category);
+                    break;
+                case "Location":
+                    items = items.OrderBy(i => i.Location);
+                    break;
+                case "Name":
+                    items = items.OrderBy(i => i.Name);
+                    break;
+                case "Email":
+                    items = items.OrderBy(i => i.Email);
+                    break;
+                default:
+                    items = items.OrderBy(i => i.Location);
+                    break;
+            }
+
+            int pageSize = 50;
+            return View(await PaginatedList<Ticket>.CreateAsync(items.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
     }
 }
