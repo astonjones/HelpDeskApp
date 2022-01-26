@@ -16,29 +16,30 @@
             <div class="form-group row py-3">
                 <div class="col-12">
                     <label asp-for="Status"></label>
-                    <div asp-form="Status">
-                            <input asp-for="Status" class="form-control" />
-                        <span asp-validation-for="Status" class="text-danger"></span>
-                    </div>
+                    <select asp-for="Status" class="form-control">
+                        <option value="Not Started">Not Started</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Third Party">Waiting on 3rd party</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
             </div>
             }
 
             <div class="form-group row py-3">
                 <div class="col-12">
-                    <label asp-for="Name"></label>
-                    <div asp-form="Name">
-                        <input asp-for="Name" class="form-control"/>
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row py-3">
-                <div class="col-12">
                     <label asp-for="Email"></label>
                     <div asp-form="Email">
-                        <input asp-for="Email" class="form-control" value=@User.Identity.Name readonly/>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <input asp-for="Email" class="form-control" value=@User.Identity.Name/>
+                        }
+                        else
+                        {
+                            <input asp-for="Email" class="form-control" value=@User.Identity.Name readonly/>
+                            
+                        }
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                 </div>
@@ -62,36 +63,31 @@
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                 </div>
-
             </div>
 
             <div class="form-group row py-3">
-                <div class="col-6">
+                <div class="col-4">
                     <label asp-for="Category"></label>
-                    <div>
-                        <select asp-for="Category">
-                            <option value="Printer Issue">Printer Issue</option>
-                            <option value="CPU Issue">Computer Issue</option>
-                            <option value="Login Issue">Login Issue</option>
-                            <option value="Software Issue">Software Issue</option>
-                            <option value="DigitalRX Issue">DigitalRX Issue</option>
-                            <option value="Phone Issue">Phone Issue</option>
-                        </select>
-                        <span asp-validation-for="Category" class="text-danger"></span>
-                    </div>
+                    <select asp-for="Category" class="form-control">
+                        <option value="Printer Issue">Printer Issue</option>
+                        <option value="CPU Issue">Computer Issue</option>
+                        <option value="Login Issue">Login Issue</option>
+                        <option value="Software Issue">Software Issue</option>
+                        <option value="DigitalRX Issue">DigitalRX Issue</option>
+                        <option value="Phone Issue">Phone Issue</option>
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger"></span>
                 </div>
                 <div class="col-4">
                     <label asp-for="Urgency"></label>
-                    <div>
-                        <select asp-for="Urgency">
-                            <option value="1">1 (Not Urgent)</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5 (Most Urgent)</option>
-                        </select>
-                        <span asp-validation-for="Urgency" class="text-danger"></span>
-                    </div>
+                    <select asp-for="Urgency" class="form-control">
+                        <option value="1">1 (Not Urgent)</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5 (Most Urgent)</option>
+                    </select>
+                    <span asp-validation-for="Urgency" class="text-danger"></span>
                 </div>
             </div>
 
